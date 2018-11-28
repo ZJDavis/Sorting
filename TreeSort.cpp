@@ -11,18 +11,8 @@ using namespace std;
     -Zack
 */
 
- 
-// A utility function to create a new BST Node 
-struct Node *newNode(int data) 
-{ 
-    struct Node *temp = new Node; 
-    temp->num = data; 
-    temp->left = temp->right = NULL; 
-    return temp; 
-} 
-  
 // main logic of tree sort
-void treeSort(int * array, int n) 
+void treeSort(int * array, long int n) 
 { 
     //start with an empty tree
     struct Node *root = NULL; 
@@ -64,5 +54,13 @@ Node* insert(Node* node, int data)
     // return Node pointer
     return node; 
 } 
-  
+
+// A utility function to create a new BST Node 
+struct Node *newNode(int data) 
+{ 
+    struct Node *temp = new Node; 
+    temp->num = data; 
+    temp->left = temp->right = NULL; 
+    return temp; 
+}   
   

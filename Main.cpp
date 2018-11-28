@@ -13,9 +13,13 @@ int main()
 	Timer MStimer; //create merge sort timer
 	int dataID = 0; //handles the switching between the different data set types
 	cout.precision(15); //avoids the scientific notation on large time values (measured in nanoseconds)
+	ofstream outputFile;
+	outputFile.open("sortingData.txt");
 
 	for (long int size = 10000; size <= 10000000; size = 10 * size)
 	{
+		cout << size << " data set\n";
+
 		for (dataID = 1; dataID <= 4; ++dataID)
 		{
 
@@ -30,6 +34,7 @@ int main()
 				cout << "Pseudo-random, many distinct:\n";
 				for(int i=0; i<size; i++)
 				{ 
+					//build an array with the size being the upper limit for random numbers
 					array[i] = (rand() % size)+1; 
 				}
 
@@ -39,6 +44,7 @@ int main()
 				cout << "Pseudo-random, few distinct:\n";
 				for(int i=0; i<size; i++)
 				{ 
+					//build an array where the numbers are only 1-100
 					array[i] = (rand() % 100)+1; 
 				} 
 			}
@@ -47,6 +53,7 @@ int main()
 				cout << "Nearly sorted:\n";
 				for(int i=0; i<size; i++)
 				{ 
+					//build an array that generally has the numbers sorted, but not quite
 					array[i] = (rand() % 100)+(i/100); 
 				} 
 			}
@@ -55,6 +62,7 @@ int main()
 				cout << "Reverse sorted:\n";
 				for(int i=0; i<size; i++)
 				{ 
+					//build an array were all numbers are sorted from largest to smallest
 					array[i] = size - i; 
 				} 
 			}
@@ -86,40 +94,47 @@ int main()
 					arrayMS[i] = array[i];
 				}
 	//HeapSort
-				cout << "Heap Sort ";
 				HStimer.start();
 				heapSort(arrayHS, size);
 				HStimer.stop();
-				
+				/*
 				if (size > 1000000) //nanoseconds will overflow after about 2 seconds
 					cout << "Array size: " << size << ", Time: " << HStimer.elapsedMilliseconds() << " milliseconds.\n";
-				else
-					cout << "Array size: " << size << ", Time: " << HStimer.elapsedNanoseconds() << " nanoseconds.\n";
+				else*/
+					outputFile << dataID << " HSArray " << size << " Time " << HStimer.elapsedNanoseconds() << endl;
 	//TreeSort
-/*				cout << "Tree Sort ";
-				TStimer.start();
-				treeSort(arrayTS, size);
-				TStimer.stop();
-				if (size > 1000000) //nanoseconds will overflow after about 2 seconds
-					cout << "Array size: " << size << ", Time: " << TStimer.elapsedMilliseconds() << " milliseconds.\n";
-				else
-					cout << "Array size: " << size << ", Time: " << TStimer.elapsedNanoseconds() << " nanoseconds.\n";
-*/	//CountSort
-				if (size > 1000000) 
+				if (size > 10000 && dataID == 4) 
 				{
-					cout << "Skipping Counting Sort for large data sets \n";
+					outputFile << "TSArray " << size << " Time " << endl;
+				}
+				else if (size > 1000000 && dataID == 3) 
+				{
+					outputFile << "TSArray " << size << " Time " << endl;
 				}
 				else
 				{
-					cout << "Counting Sort ";
+					TStimer.start();
+					treeSort(arrayTS, size);
+					TStimer.stop();
+					outputFile << "TSArray " << size << " Time " << TStimer.elapsedNanoseconds() << endl;
+				}
+	//CountSort
+				if (size > 1000000) 
+				{
+					outputFile << "CSArray " << size << " Time " << endl;
+				}
+				else
+				{
 					CStimer.start();
 					countingSort(arrayCS, size);
 					CStimer.stop();
-					cout << "Array size: " << size << ", Time: " << CStimer.elapsedNanoseconds() << " nanoseconds.\n";
+					outputFile << "CSArray " << size << " Time " << CStimer.elapsedNanoseconds() << endl;
 				}
 			}
 		}
-	// file output will go here
 	}
+
+	outputFile.close();
+	cout << "Done!\n";
     return 0;
 }

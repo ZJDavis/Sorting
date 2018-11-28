@@ -1,10 +1,9 @@
-#include <iostream>
-#include <chrono>
-#include <ctime>
-#include <cmath>
-#include <cstdlib> 
-
-using namespace std;
+#include <iostream> //for writing to console
+#include <fstream> //for writing to file
+#include <chrono> //for Timer class
+#include <ctime> //also for Timer class
+#include <cmath> //2+2 is 4, -1 is 3. QUICK MAFS
+#include <cstdlib> //standard stuff
 
 //algorithms (modify the definitions if needed)
 
