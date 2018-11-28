@@ -105,30 +105,30 @@ int main()
 	//TreeSort
 				if (size > 10000 && dataID == 4) 
 				{
-					outputFile << dataID << "TSArray " << size << " Time " << endl;
+					outputFile << dataID << " TSArray " << size << " Time " << endl;
 				}
 				else if (size > 1000000 && dataID == 3) 
 				{
-					outputFile << dataID << "TSArray " << size << " Time " << endl;
+					outputFile << dataID << " TSArray " << size << " Time " << endl;
 				}
 				else
 				{
 					TStimer.start();
 					treeSort(arrayTS, size);
 					TStimer.stop();
-					outputFile << dataID << "TSArray " << size << " Time " << TStimer.elapsedNanoseconds() << endl;
+					outputFile << dataID << " TSArray " << size << " Time " << TStimer.elapsedNanoseconds() << endl;
 				}
 	//CountSort
 				if (size > 1000000) 
 				{
-					outputFile << dataID << "CSArray " << size << " Time " << endl;
+					outputFile << dataID << " CSArray " << size << " Time " << endl;
 				}
 				else
 				{
 					CStimer.start();
 					countingSort(arrayCS, size);
 					CStimer.stop();
-					outputFile << dataID << "CSArray " << size << " Time " << CStimer.elapsedNanoseconds() << endl;
+					outputFile << dataID << " CSArray " << size << " Time " << CStimer.elapsedNanoseconds() << endl;
 				}
 			}
 		}
