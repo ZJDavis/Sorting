@@ -31,7 +31,8 @@ double Timer::elapsedSeconds()
         endTime = EndTime;
     }
     
-    return chrono::duration_cast<chrono::seconds>(endTime - StartTime).count();
+    double iS = chrono::duration_cast<chrono::seconds>(endTime - StartTime).count();
+    return iS;
 }
 
 double Timer::elapsedMilliseconds()
@@ -47,7 +48,8 @@ double Timer::elapsedMilliseconds()
         endTime = EndTime;
     }
     
-    return chrono::duration_cast<chrono::milliseconds>(endTime - StartTime).count();
+    double iMS = chrono::duration_cast<chrono::milliseconds>(endTime - StartTime).count();
+    return iMS;
 }
 
 double Timer::elapsedNanoseconds()
@@ -63,7 +65,8 @@ double Timer::elapsedNanoseconds()
         endTime = EndTime;
     }
     
-    return chrono::duration_cast<chrono::nanoseconds>(endTime - StartTime).count();
+    double iNS = chrono::duration_cast<chrono::nanoseconds>(endTime - StartTime).count();
+    return iNS;
 }
 
 
