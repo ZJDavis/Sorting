@@ -8,7 +8,6 @@ void heapSort(int * array, int n);
 
 int main() 
 { 
-
     int size;
     cout<< "how big do you want the array?" << endl;
     cin >> size;
@@ -50,6 +49,7 @@ int main()
     
     cout << "Time: " << tS << " seconds \n"; 
     cout << tMS % 1000 << tNS % 1000000 << " nanoseconds.\n";
+    
     return 0;
 }
 
@@ -76,3 +76,16 @@ void heapify(int * array, int n, int i)
 }
 
 //main heapSort function
+void heapSort(int * array, int n)
+{
+    //build the heap
+    for (int i = n / 2 - 1; i >= 0; i--)
+        heapify(array, n, i);
+
+    for (int i = n-1; i >= 0; i--)
+    {
+        //move the current root to the end
+	swap(array[0], array[i]);
+	heapify(array, i, 0);
+    }
+}
