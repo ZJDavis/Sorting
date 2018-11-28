@@ -2,71 +2,69 @@
 
 using namespace std;
 
-class Timer
-{
-public:
-    void start()
-    {
-        m_StartTime = chrono::system_clock::now();
-        m_bRunning = true;
-    }
-    
-    void stop()
-    {
-        m_EndTime = chrono::system_clock::now();
-        m_bRunning = false;
-    }
-    
-    double elapsedSeconds()
-    {
-        chrono::time_point < chrono::system_clock> endTime;
-        
-        if(m_bRunning)
-        {
-            endTime = chrono::system_clock::now();
-        }
-        else
-        {
-            endTime = m_EndTime;
-        }
-        
-        return chrono::duration_cast<chrono::seconds>(endTime - m_StartTime).count();
-    }
-    
-    double elapsedMilliseconds()
-    {
-        chrono::time_point<chrono::system_clock> endTime;
-        
-        if(m_bRunning)
-        {
-            endTime = chrono::system_clock::now();
-        }
-        else
-        {
-            endTime = m_EndTime;
-        }
-        
-        return chrono::duration_cast<chrono::milliseconds>(endTime - m_StartTime).count();
-    }
-    
-    double elapsedNanoseconds()
-    {
-        chrono::time_point<chrono::system_clock> endTime;
-        
-        if(m_bRunning)
-        {
-            endTime = chrono::system_clock::now();
-        }
-        else
-        {
-            endTime = m_EndTime;
-        }
-        
-        return chrono::duration_cast<chrono::nanoseconds>(endTime - m_StartTime).count();
-    }
+chrono::time_point<chrono::system_clock> StartTime;
+chrono::time_point<chrono::system_clock> EndTime;
+bool bRunning = false;
 
-private:
-    chrono::time_point<chrono::system_clock> m_StartTime;
-    chrono::time_point<chrono::system_clock> m_EndTime;
-    bool m_bRunning = false;
-};
+void Timer::start()
+{
+    StartTime = chrono::system_clock::now();
+    bRunning = true;
+}
+
+void Timer::stop()
+{
+    EndTime = chrono::system_clock::now();
+    bRunning = false;
+}
+
+double Timer::elapsedSeconds()
+{
+    chrono::time_point < chrono::system_clock> endTime;
+    
+    if(bRunning)
+    {
+        endTime = chrono::system_clock::now();
+    }
+    else
+    {
+        endTime = EndTime;
+    }
+    
+    return chrono::duration_cast<chrono::seconds>(endTime - StartTime).count();
+}
+
+double Timer::elapsedMilliseconds()
+{
+    chrono::time_point<chrono::system_clock> endTime;
+    
+    if(bRunning)
+    {
+        endTime = chrono::system_clock::now();
+    }
+    else
+    {
+        endTime = EndTime;
+    }
+    
+    return chrono::duration_cast<chrono::milliseconds>(endTime - StartTime).count();
+}
+
+double Timer::elapsedNanoseconds()
+{
+    chrono::time_point<chrono::system_clock> endTime;
+    
+    if(bRunning)
+    {
+        endTime = chrono::system_clock::now();
+    }
+    else
+    {
+        endTime = EndTime;
+    }
+    
+    return chrono::duration_cast<chrono::nanoseconds>(endTime - StartTime).count();
+}
+
+
+
