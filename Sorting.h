@@ -12,7 +12,7 @@ using namespace std;
 void heapify(int * array, long int n, long int i);
 void heapSort(int * array, long int n);
 
-void countSort(int * array, long int n);
+void countingSort(int * array, long int n);
 
 void treeSort(int* array, long int n);
 

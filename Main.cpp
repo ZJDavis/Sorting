@@ -81,21 +81,22 @@ int main()
 				//reset timer numbers, just in case
 
 				timer.start();
-				heapSort(arrayHS, size);
+				heapSort(arrayHS, size); //Try running countSort
 				timer.stop();
 				
 				if (size > 1000000) //nanoseconds will overflow after about 2 seconds
 					cout << "Array size: " << size << ", Time: " << timer.elapsedMilliseconds() << " milliseconds.\n";
 				else
 					cout << "Array size: " << size << ", Time: " << timer.elapsedNanoseconds() << " nanoseconds.\n";
-				/*
-				timer.start();
-				treeSort(arrayTS, size);
-				timer.stop();
-				*/
+				
+				//timer.start();
+				//treeSort(arrayTS, size);
+				//timer.stop();
+				
+				
 			}
 		}
-	// file output will go here
+	// file output will go here	
 	}
     return 0;
 }
