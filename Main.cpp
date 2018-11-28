@@ -5,6 +5,7 @@ using namespace std;
 //heap sort functions
 void heapify(int * array, int n, int i);
 void heapSort(int * array, int n);
+void countSort(int * arr, int size);
 
 int main() 
 { 
@@ -49,7 +50,7 @@ int main()
     
     cout << "Time: " << tS << " seconds \n"; 
     cout << tMS % 1000 << tNS % 1000000 << " nanoseconds.\n";
-    
+
     return 0;
 }
 
@@ -89,3 +90,35 @@ void heapSort(int * array, int n)
 	heapify(array, i, 0);
     }
 }
+
+void countSort(int * array, int size)
+{
+    int maxValue = 0;
+    //find the max value first
+    for (int x = 1; x < size; x++)
+    {
+        if (array[x] > maxValue)
+            maxValue = array[x];
+    }
+
+    int sorted[size] = {0}; 
+    int count[maxValue] = {0};
+
+    for (int j = 0; j < size; j++)
+    {
+        count[array[j]]++;
+    }
+
+    for (int i = 0; i < size; i++)
+    {
+        count[i] += count[i-1];
+    }
+
+    for (int z = size; z >= 0; z--)
+    {
+        sorted[count[array[z]]] = array[z];
+	count[array[z]] = count[array[z]]-1;
+    }
+}
+
+
