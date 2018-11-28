@@ -5,5 +5,5 @@ Quicksort - Lily
 Mergesort - Lily  
 Heapsort - Adrian FINISHED  
 CountingSort - Adrian   
-Treesort - Zack  
+Treesort - Zack FINISHED (but it sucks)                                                                                                   
 Cubesort - Zack  
