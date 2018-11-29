@@ -26,10 +26,15 @@ Node* insert(Node* node, int data);
 //cube sort functions
 void cubeSort(int* array);
 //quicksort functions
+void swap(int * a, int * b);
+int quickSortPartition(int * array, int low, int high);
+void quickSortHelper(int * array, int low, int high);
 void quickSort(int* array, long int n);
 void quickSort2(int* array, long int n);
 //merge sort functions
 void mergeSort(int* array, long int n);
+void merge(int * array, int left, int middle, int right);
+void mergeSortHelper(int * array, int left, int right);
 
 //timer class
 class Timer
