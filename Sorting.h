@@ -1,9 +1,11 @@
+
 #include <iostream> //for writing to console
 #include <fstream> //for writing to file
 #include <chrono> //for Timer class
 #include <ctime> //also for Timer class
 #include <cmath> //2+2 is 4, -1 is 3. QUICK MAFS
 #include <cstdlib> //standard stuff
+
 
 //algorithms (modify the definitions if needed)
 
@@ -23,8 +25,6 @@ struct Node *newNode(int data);
 void treeSort(int* array, long int n);
 void rewrite(Node *root, int *array, int &i);
 Node* insert(Node* node, int data);
-//cube sort functions
-void cubeSort(int* array);
 //quicksort functions
 void swap(int * a, int * b);
 int quickSortPartition(int * array, int low, int high);
@@ -36,6 +36,8 @@ void mergeSort(int* array, long int n);
 void merge(int * array, int left, int middle, int right);
 void mergeSortHelper(int * array, int left, int right);
 
+bool sortCheck(int * array, long int n);
+
 //timer class
 class Timer
 {
@@ -46,5 +48,3 @@ public:
     double elapsedMilliseconds();
     double elapsedNanoseconds();
 };
-
-

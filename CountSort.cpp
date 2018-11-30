@@ -17,9 +17,14 @@ void countingSort(int *array, long int n){
 	}
 	
 	//range has been found, if highest num is 100, range is now 101
-	int count[range]={0};
+	int* count = new int [range];
+    int i;
+    int* out =  new int [n];
+    /*
+    int count[range]={0};
     int i;
     int out[n];
+    */
     
     //counting the items
     for(i=0;i<n;i++)

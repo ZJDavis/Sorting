@@ -7,16 +7,14 @@ int main()
 	Timer HStimer; //create heapsort timer
 	Timer CStimer; //create countsort timer
 	Timer TStimer; //create tree sort timer
-	Timer cubeTimer; //create cube sort timer
 	Timer QStimer; //create quick sort timer 1
-	Timer QStimer2; //create quick sort timer 2
 	Timer MStimer; //create merge sort timer
 	int dataID = 0; //handles the switching between the different data set types
-	cout.precision(15); //avoids the scientific notation on large time values (measured in nanoseconds)
 	ofstream outputFile;
+	outputFile.precision(15); //avoids the scientific notation on large time values (measured in nanoseconds)
 	outputFile.open("sortingData.txt");
 
-	for (long int size = 10000; size <= 10000000; size = 10 * size)
+	for (long int size = 10000; size <= 1000000; size = 10 * size)
 	{
 		cout << size << " data set\n";
 
@@ -72,52 +70,51 @@ int main()
 			}
 
 			//build algorithm arrays here
-			int*arrayQS = new int [size]; //quicksort array
-			int*arrayQS2 = new int [size]; //quicksort array 2
-			int*arrayMS = new int [size]; //merge sort array
 			int*arrayHS = new int [size]; //heapsort array
-			int*arrayCS = new int [size]; //counting sort array
+			int*arrayQS = new int [size]; //quicksort array
 			int*arrayTS = new int [size]; //treesort array
-			int*array3S = new int [size]; //cubesort array
+			int*arrayMS = new int [size]; //merge sort array
+			int*arrayCS = new int [size]; //counting sort array
 
 			//loop to gather multiple data points for each set and algorithm combination
-			for (int dataPoint=1; dataPoint<=10; ++dataPoint)
+			for (int dataPoint=1; dataPoint<=100; ++dataPoint)
 			{
+				cout << "Datapoint " << dataPoint << ": ";
 				for (int i=0; i<size-1; ++i) //array copy
 				{
 					arrayHS[i] = array[i];
-					arrayCS[i] = array[i];
 					arrayTS[i] = array[i];
-					array3S[i] = array[i];
+					arrayCS[i] = array[i];
 					arrayQS[i] = array[i];
-					arrayQS2[i] = array[i];
 					arrayMS[i] = array[i];
 				}
+	//MergeSort
+				MStimer.start();
+				mergeSort(arrayMS, size);
+				MStimer.stop();
+
+				outputFile << dataID << " MSArray " << size << " Time " << MStimer.elapsedNanoseconds() << endl;
+
+	//QuickSort
+				QStimer.start();
+				quickSort(arrayQS, size);
+				QStimer.stop();
+
+				outputFile << dataID << " QSArray " << size << " Time " << QStimer.elapsedNanoseconds() << endl;
+
 	//HeapSort
 				HStimer.start();
 				heapSort(arrayHS, size);
 				HStimer.stop();
-				/*
-				if (size > 1000000) //nanoseconds will overflow after about 2 seconds
-					cout << "Array size: " << size << ", Time: " << HStimer.elapsedMilliseconds() << " milliseconds.\n";
-				else*/
-					outputFile << dataID << " HSArray " << size << " Time " << HStimer.elapsedNanoseconds() << endl;
+
+				outputFile << dataID << " HSArray " << size << " Time " << HStimer.elapsedNanoseconds() << endl;
+
 	//TreeSort
-				if (size > 10000 && dataID == 4) 
-				{
-					outputFile << dataID << " TSArray " << size << " Time " << endl;
-				}
-				else if (size > 1000000 && dataID == 3) 
-				{
-					outputFile << dataID << " TSArray " << size << " Time " << endl;
-				}
-				else
-				{
-					TStimer.start();
-					treeSort(arrayTS, size);
-					TStimer.stop();
-					outputFile << dataID << " TSArray " << size << " Time " << TStimer.elapsedNanoseconds() << endl;
-				}
+				TStimer.start();
+				treeSort(arrayTS, size);
+				TStimer.stop();
+
+				outputFile << dataID << " TSArray " << size << " Time " << TStimer.elapsedNanoseconds() << endl;
 	//CountSort
 				if (size > 1000000) 
 				{
@@ -131,10 +128,27 @@ int main()
 					outputFile << dataID << " CSArray " << size << " Time " << CStimer.elapsedNanoseconds() << endl;
 				}
 			}
+/* testing sorted order outputs (1 = true, 0 = false)
+			cout << "ArrayHS: " << sortCheck(arrayHS,size) << "\n";
+			cout << "ArrayTS: " << sortCheck(arrayTS,size) << "\n";
+			cout << "ArrayCS: " << sortCheck(arrayCS,size) << "\n";
+			cout << "ArrayQS: " << sortCheck(arrayQS,size) << "\n";
+			cout << "ArrayMS: " << sortCheck(arrayMS,size) << "\n";
+*/
 		}
 	}
 
 	outputFile.close();
 	cout << "Done!\n";
     return 0;
+}
+
+bool sortCheck(int * array, long int n)
+{
+	for (int i = 0; i < n-1; ++i)
+	{
+		if (array[i] > array[i+1])
+			return false;
+	}
+	return true;
 }

@@ -33,7 +33,8 @@ void rewrite(Node *root, int * array, int &i)
     if (root != NULL) 
     { 
         rewrite(root->left, array, i); 
-        array[i + 1] = root->num; 
+        array[i] = root->num; 
+        ++i;
         rewrite(root->right, array, i); 
     } 
 } 
@@ -48,7 +49,7 @@ Node* insert(Node* node, int data)
     // Otherwise, recurse down the tree
     if (data < node->num) 
         node->left  = insert(node->left, data); 
-    else if (data > node->num) 
+    else if (data >= node->num) 
         node->right = insert(node->right, data); 
   
     // return Node pointer
