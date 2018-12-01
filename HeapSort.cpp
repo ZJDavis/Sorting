@@ -17,13 +17,13 @@ void heapify(int * array, long int n, long int i)
     if (left < n && array[left] > array[biggest])
     	biggest = left;
     if (right < n && array[right] > array[biggest])
-	biggest = right;
+	    biggest = right;
     
     if (biggest != i)
     {
         swap(array[i], array[biggest]);
-	//recursion
-	heapify(array, n, biggest);
+	    //recursion
+	    heapify(array, n, biggest);
     }
 }
 
