@@ -79,7 +79,7 @@ namespace
     }
 }
 
-void treeSort(int* array, long int n)
+void treeSortNaive(int* array, long int n)
 {
     if (array == nullptr || n <= 1)
     {

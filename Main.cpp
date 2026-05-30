@@ -1,154 +1,315 @@
 #include "Sorting.h"
 
-using namespace std;
+#include <algorithm>
+#include <fstream>
+#include <iostream>
+#include <limits>
+#include <random>
+#include <string>
+#include <vector>
 
-int main() 
-{ 
-	Timer HStimer; //create heapsort timer
-	Timer CStimer; //create countsort timer
-	Timer TStimer; //create tree sort timer
-	Timer QStimer; //create quick sort timer 1
-	Timer MStimer; //create merge sort timer
-	int dataID = 0; //handles the switching between the different data set types
-	ofstream outputFile;
-	outputFile.precision(15); //avoids the scientific notation on large time values (measured in nanoseconds)
-	outputFile.open("sortingData.txt");
+namespace
+{
+    constexpr int TrialCount = 5;
+    constexpr unsigned int BaseSeed = 350;
 
-	for (long int size = 10000; size <= 1000000; size = 10 * size)
-	{
-		cout << size << " data set\n";
+    struct InputCase
+    {
+        std::string name;
+        int id;
+    };
 
-		for (dataID = 1; dataID <= 4; ++dataID)
-		{
+    struct SortAlgorithm
+    {
+        std::string name;
+        void (*sortFunction)(int*, long int);
+    };
 
-			//create initial array
-			int*array = new int [size];
-			srand((unsigned)time(0)); 
+    std::vector<int> generateData(long int size, int inputId, unsigned int seed)
+    {
+        std::vector<int> data(static_cast<std::size_t>(size));
+        std::mt19937 generator(seed);
 
-			//populate array
+        switch (inputId)
+        {
+        case 1:
+        {
+            // Pseudo-random, many distinct values.
+            std::uniform_int_distribution<int> distribution(
+                -static_cast<int>(size),
+                static_cast<int>(size));
 
-			if (dataID == 1) //pseudo-random, many distinct
-			{
-				cout << "Pseudo-random, many distinct:\n";
-				for(int i=0; i<size; i++)
-				{ 
-					//build an array with the size being the upper limit for random numbers
-					array[i] = (rand() % size)+1; 
-				}
+            for (long int i = 0; i < size; ++i)
+            {
+                data[static_cast<std::size_t>(i)] = distribution(generator);
+            }
 
-			}
-			else if (dataID == 2) //pseudo-random, few distinct
-			{
-				cout << "Pseudo-random, few distinct:\n";
-				for(int i=0; i<size; i++)
-				{ 
-					//build an array where the numbers are only 1-100
-					array[i] = (rand() % 100)+1; 
-				} 
-			}
-			else if (dataID == 3) //nearly sorted
-			{
-				cout << "Nearly sorted:\n";
-				for(int i=0; i<size; i++)
-				{ 
-					//build an array that generally has the numbers sorted, but not quite
-					array[i] = (rand() % 100)+(i/100); 
-				} 
-			}
-			else if (dataID == 4) //reverse sorted
-			{
-				cout << "Reverse sorted:\n";
-				for(int i=0; i<size; i++)
-				{ 
-					//build an array were all numbers are sorted from largest to smallest
-					array[i] = size - i; 
-				} 
-			}
-			else 
-			{
-				cout << "dataID error.\n";
-			}
+            break;
+        }
 
-			//build algorithm arrays here
-			int*arrayHS = new int [size]; //heapsort array
-			int*arrayQS = new int [size]; //quicksort array
-			int*arrayTS = new int [size]; //treesort array
-			int*arrayMS = new int [size]; //merge sort array
-			int*arrayCS = new int [size]; //counting sort array
+        case 2:
+        {
+            // Pseudo-random, few distinct values.
+            std::uniform_int_distribution<int> distribution(0, 100);
 
-			//loop to gather multiple data points for each set and algorithm combination
-			for (int dataPoint=1; dataPoint<=100; ++dataPoint)
-			{
-				cout << "Datapoint " << dataPoint << ": ";
-				for (int i=0; i<size-1; ++i) //array copy
-				{
-					arrayHS[i] = array[i];
-					arrayTS[i] = array[i];
-					arrayCS[i] = array[i];
-					arrayQS[i] = array[i];
-					arrayMS[i] = array[i];
-				}
-	//MergeSort
-				MStimer.start();
-				mergeSort(arrayMS, size);
-				MStimer.stop();
+            for (long int i = 0; i < size; ++i)
+            {
+                data[static_cast<std::size_t>(i)] = distribution(generator);
+            }
 
-				outputFile << dataID << " MSArray " << size << " Time " << MStimer.elapsedNanoseconds() << endl;
+            break;
+        }
 
-	//QuickSort
-				QStimer.start();
-				quickSort(arrayQS, size);
-				QStimer.stop();
+        case 3:
+        {
+            // Already sorted.
+            for (long int i = 0; i < size; ++i)
+            {
+                data[static_cast<std::size_t>(i)] = static_cast<int>(i);
+            }
 
-				outputFile << dataID << " QSArray " << size << " Time " << QStimer.elapsedNanoseconds() << endl;
+            break;
+        }
 
-	//HeapSort
-				HStimer.start();
-				heapSort(arrayHS, size);
-				HStimer.stop();
+        case 4:
+        {
+            // Reverse sorted.
+            for (long int i = 0; i < size; ++i)
+            {
+                data[static_cast<std::size_t>(i)] = static_cast<int>(size - i);
+            }
 
-				outputFile << dataID << " HSArray " << size << " Time " << HStimer.elapsedNanoseconds() << endl;
+            break;
+        }
 
-	//TreeSort
-				TStimer.start();
-				treeSort(arrayTS, size);
-				TStimer.stop();
+        default:
+        {
+            break;
+        }
+        }
 
-				outputFile << dataID << " TSArray " << size << " Time " << TStimer.elapsedNanoseconds() << endl;
-	//CountSort
-				if (size > 1000000) 
-				{
-					outputFile << dataID << " CSArray " << size << " Time " << endl;
-				}
-				else
-				{
-					CStimer.start();
-					countingSort(arrayCS, size);
-					CStimer.stop();
-					outputFile << dataID << " CSArray " << size << " Time " << CStimer.elapsedNanoseconds() << endl;
-				}
-			}
-/* testing sorted order outputs (1 = true, 0 = false)
-			cout << "ArrayHS: " << sortCheck(arrayHS,size) << "\n";
-			cout << "ArrayTS: " << sortCheck(arrayTS,size) << "\n";
-			cout << "ArrayCS: " << sortCheck(arrayCS,size) << "\n";
-			cout << "ArrayQS: " << sortCheck(arrayQS,size) << "\n";
-			cout << "ArrayMS: " << sortCheck(arrayMS,size) << "\n";
-*/
-		}
-	}
+        return data;
+    }
 
-	outputFile.close();
-	cout << "Done!\n";
-    return 0;
+    bool shouldSkipBenchmark(const std::string& algorithmName, const std::string& inputName, long int size)
+    {
+        const bool isWorstCaseInput =
+            inputName == "SortedAscending" ||
+            inputName == "ReverseSorted";
+
+        if (algorithmName == "QuickSortNaive" && isWorstCaseInput && size > 10000)
+        {
+            return true;
+        }
+
+        if (algorithmName == "TreeSortNaive" && isWorstCaseInput && size > 10000)
+        {
+            return true;
+        }
+
+        return false;
+    }
+
+    std::string skipReason(const std::string& algorithmName, const std::string& inputName, long int size)
+    {
+        if (shouldSkipBenchmark(algorithmName, inputName, size))
+        {
+            return "Skipped intentionally; naive algorithm has severe worst-case behavior for this input at this size";
+        }
+
+        return "";
+    }
+
+    void writeCsvHeader(std::ofstream& outputFile)
+    {
+        outputFile
+            << "algorithm,"
+            << "input_type,"
+            << "input_id,"
+            << "size,"
+            << "trial,"
+            << "seed,"
+            << "min_value,"
+            << "max_value,"
+            << "value_range,"
+            << "time_ns,"
+            << "time_ms,"
+            << "sorted,"
+            << "status,"
+            << "notes\n";
+    }
+
+    void writeCsvRow(
+        std::ofstream& outputFile,
+        const std::string& algorithmName,
+        const InputCase& inputCase,
+        long int size,
+        int trial,
+        unsigned int seed,
+        int minValue,
+        int maxValue,
+        long long valueRange,
+        double timeNs,
+        double timeMs,
+        bool sorted,
+        const std::string& status,
+        const std::string& notes)
+    {
+        outputFile
+            << algorithmName << ','
+            << inputCase.name << ','
+            << inputCase.id << ','
+            << size << ','
+            << trial << ','
+            << seed << ','
+            << minValue << ','
+            << maxValue << ','
+            << valueRange << ','
+            << timeNs << ','
+            << timeMs << ','
+            << (sorted ? "true" : "false") << ','
+            << status << ','
+            << '"' << notes << '"' << '\n';
+    }
 }
 
-bool sortCheck(int * array, long int n)
+bool sortCheck(const int* array, long int n)
 {
-	for (int i = 0; i < n-1; ++i)
-	{
-		if (array[i] > array[i+1])
-			return false;
-	}
-	return true;
+    if (array == nullptr || n <= 1)
+    {
+        return true;
+    }
+
+    for (long int i = 0; i < n - 1; ++i)
+    {
+        if (array[i] > array[i + 1])
+        {
+            return false;
+        }
+    }
+
+    return true;
+}
+
+int main()
+{
+    const std::vector<long int> sizes =
+    {
+        1000,
+        10000,
+        100000,
+        1000000
+    };
+
+    const std::vector<InputCase> inputCases =
+    {
+        { "RandomManyDistinct", 1 },
+        { "RandomFewDistinct", 2 },
+        { "SortedAscending", 3 },
+        { "ReverseSorted", 4 }
+    };
+
+    const std::vector<SortAlgorithm> algorithms =
+    {
+        { "HeapSort", heapSort },
+        { "CountingSort", countingSort },
+        { "MergeSort", mergeSort },
+        { "ParallelMergeSort", parallelMergeSort },
+        { "QuickSortNaive", quickSortNaive },
+        { "QuickSortMedian3", quickSortMedian3 },
+        { "TreeSortNaive", treeSortNaive },
+        { "TreeSortMultiset", treeSortMultiset },
+        { "CubeSort", cubeSort }
+    };
+
+    std::ofstream outputFile("sorting_results.csv");
+    outputFile.precision(15);
+
+    if (!outputFile)
+    {
+        std::cerr << "Failed to open sorting_results.csv for writing.\n";
+        return 1;
+    }
+
+    writeCsvHeader(outputFile);
+
+    for (long int size : sizes)
+    {
+        std::cout << "Testing size " << size << "...\n";
+
+        for (const InputCase& inputCase : inputCases)
+        {
+            for (int trial = 1; trial <= TrialCount; ++trial)
+            {
+                const unsigned int seed =
+                    BaseSeed +
+                    static_cast<unsigned int>(inputCase.id * 100000) +
+                    static_cast<unsigned int>(trial);
+
+                std::vector<int> sourceData = generateData(size, inputCase.id, seed);
+
+                const auto minMax = std::minmax_element(sourceData.begin(), sourceData.end());
+                const int minValue = *minMax.first;
+                const int maxValue = *minMax.second;
+                const long long valueRange =
+                    static_cast<long long>(maxValue) - static_cast<long long>(minValue) + 1;
+
+                for (const SortAlgorithm& algorithm : algorithms)
+                {
+                    if (shouldSkipBenchmark(algorithm.name, inputCase.name, size))
+                    {
+                        writeCsvRow(
+                            outputFile,
+                            algorithm.name,
+                            inputCase,
+                            size,
+                            trial,
+                            seed,
+                            minValue,
+                            maxValue,
+                            valueRange,
+                            0.0,
+                            0.0,
+                            false,
+                            "skipped",
+                            skipReason(algorithm.name, inputCase.name, size));
+
+                        continue;
+                    }
+
+                    std::vector<int> workingData = sourceData;
+
+                    Timer timer;
+                    timer.start();
+
+                    algorithm.sortFunction(workingData.data(), static_cast<long int>(workingData.size()));
+
+                    timer.stop();
+
+                    const bool sorted = sortCheck(
+                        workingData.data(),
+                        static_cast<long int>(workingData.size()));
+
+                    writeCsvRow(
+                        outputFile,
+                        algorithm.name,
+                        inputCase,
+                        size,
+                        trial,
+                        seed,
+                        minValue,
+                        maxValue,
+                        valueRange,
+                        timer.elapsedNanoseconds(),
+                        timer.elapsedMilliseconds(),
+                        sorted,
+                        sorted ? "completed" : "failed",
+                        sorted ? "" : "Sort completed but output failed sorted-order validation");
+                }
+            }
+        }
+    }
+
+    std::cout << "Done. Results written to sorting_results.csv\n";
+    return 0;
 }

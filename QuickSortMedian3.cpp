@@ -78,7 +78,7 @@ namespace
     }
 }
 
-void quickSort(int* array, long int n)
+void quickSortMedian3(int* array, long int n) 
 {
     if (array == nullptr || n <= 1)
     {

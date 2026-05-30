@@ -9,7 +9,7 @@
     This avoids the worst-case degeneration of a plain unbalanced BST.
 */
 
-void treeSort(int* array, long int n)
+void treeSortMultiset(int* array, long int n)
 {
     if (array == nullptr || n <= 1)
     {

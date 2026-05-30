@@ -3,25 +3,16 @@
 #include <algorithm>
 
 /*
-	Quick Sort
+	Naive Quick Sort
 
-	In-place comparison sorting algorithm. This version uses the final
-	element as the pivot, which is simple but vulnerable to poor performance
-	on already-sorted or reverse-sorted input.
+	Uses the final element as the pivot. This version is intentionally kept
+	as a benchmark comparison because it performs poorly on already-sorted
+	and reverse-sorted input.
 */
-
-/* unneeded */
-//	void swap(int * a, int * b)
-//	{
-//		int temp = *a;
-//		*a = *b;
-//		*b = temp;
-//	}
-
 
 namespace
 {
-	long int quickSortPartition(int * array, long int low, long int high)
+	long int quickSortNaivePartition(int* array, long int low, long int high)
 	{
 		const int pivot = array[high]; //pivot
 		long int i = (low - 1); //smaller element
@@ -39,26 +30,26 @@ namespace
 		return (i + 1);
 	}
 
-	void quickSortHelper(int* array, int low, int high)
+	void quickSortNaiveHelper(int* array, long int low, long int high)
 	{
 		if (low >= high)
 		{
 			return;
 		}
-		const long int partitionIndex = quickSortPartition(array, low, high);
+		const long int partitionIndex = quickSortNaivePartition(array, low, high);
 
 		//sort items before partition and after partition
-		quickSortHelper(array, low, part_index - 1);
-		quickSortHelper(array, part_index + 1, high);
+		quickSortNaiveHelper(array, low, part_index - 1);
+		quickSortNaiveHelper(array, part_index + 1, high);
 	}
 }
 
-void quickSort(int* array, long int n)
+void quickSortNaive(int* array, long int n)
 {
 	if (array == nullptr || n <= 1)
 	{
 		return;
 	}
 
-	quickSortHelper(array, 0, n - 1);
+	quickSortNaiveHelper(array, 0, n - 1);
 }

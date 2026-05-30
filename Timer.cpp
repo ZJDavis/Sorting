@@ -1,73 +1,40 @@
 #include "Sorting.h"
 
-using namespace std;
-
-chrono::time_point<chrono::system_clock> StartTime;
-chrono::time_point<chrono::system_clock> EndTime;
-bool bRunning = false;
-
 void Timer::start()
 {
-    StartTime = chrono::system_clock::now();
-    bRunning = true;
+    startTime = std::chrono::steady_clock::now();
+    running = true;
 }
 
 void Timer::stop()
 {
-    EndTime = chrono::system_clock::now();
-    bRunning = false;
+    endTime = std::chrono::steady_clock::now();
+    running = false;
 }
 
-double Timer::elapsedSeconds()
+double Timer::elapsedSeconds() const
 {
-    chrono::time_point < chrono::system_clock> endTime;
-    
-    if(bRunning)
-    {
-        endTime = chrono::system_clock::now();
-    }
-    else
-    {
-        endTime = EndTime;
-    }
-    
-    double iS = chrono::duration_cast<chrono::seconds>(endTime - StartTime).count();
-    return iS;
+    const auto currentEndTime = running
+        ? std::chrono::steady_clock::now()
+        : endTime;
+
+    return std::chrono::duration<double>(currentEndTime - startTime).count();
 }
 
-double Timer::elapsedMilliseconds()
+double Timer::elapsedMilliseconds() const
 {
-    chrono::time_point<chrono::system_clock> endTime;
-    
-    if(bRunning)
-    {
-        endTime = chrono::system_clock::now();
-    }
-    else
-    {
-        endTime = EndTime;
-    }
-    
-    double iMS = chrono::duration_cast<chrono::milliseconds>(endTime - StartTime).count();
-    return iMS;
+    const auto currentEndTime = running
+        ? std::chrono::steady_clock::now()
+        : endTime;
+
+    return std::chrono::duration<double, std::milli>(currentEndTime - startTime).count();
 }
 
-double Timer::elapsedNanoseconds()
+double Timer::elapsedNanoseconds() const
 {
-    chrono::time_point<chrono::system_clock> endTime;
-    
-    if(bRunning)
-    {
-        endTime = chrono::system_clock::now();
-    }
-    else
-    {
-        endTime = EndTime;
-    }
-    
-    double iNS = chrono::duration_cast<chrono::nanoseconds>(endTime - StartTime).count();
-    return iNS;
+    const auto currentEndTime = running
+        ? std::chrono::steady_clock::now()
+        : endTime;
+
+    return std::chrono::duration<double, std::nano>(currentEndTime - startTime).count();
 }
-
-
-

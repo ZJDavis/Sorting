@@ -1,53 +1,39 @@
+#ifndef SORTING_H
+#define SORTING_H
 
-#include <iostream> //for writing to console
-#include <fstream> //for writing to file
-#include <chrono> //for Timer class
-#include <ctime> //also for Timer class
-#include <cmath> //2+2 is 4, -1 is 3. QUICK MAFS
-#include <cstdlib> //standard stuff
+#include <chrono>
 
+void heapSort(int* array, long int n);
 
-//algorithms (modify the definitions if needed)
+void countingSort(int* array, long int n);
 
-//heap sort functions
-void heapify(int * array, long int n, long int i);
-void heapSort(int * array, long int n);
-//counting sort functions
-void countingSort(int * array, long int n);
-//tree sort functions
-struct Node 
-{ 
-    int num; 
-    struct Node* left;
-	struct Node* right; 
-}; 
-struct Node *newNode(int data);
-void treeSort(int* array, long int n);
-void rewrite(Node *root, int *array, int &i);
-Node* insert(Node* node, int data);
-//quicksort functions
-void swap(int * a, int * b);
-int quickSortPartition(int * array, int low, int high);
-void quickSortHelper(int * array, int low, int high);
-void quickSort(int* array, long int n);
-void quickSort2(int* array, long int n);
-//merge sort functions
 void mergeSort(int* array, long int n);
-void merge(int * array, int left, int middle, int right);
-void mergeSortHelper(int * array, int left, int right);
 void parallelMergeSort(int* array, long int n);
-//cube sort function
+
+void quickSortNaive(int* array, long int n);
+void quickSortMedian3(int* array, long int n);
+
+void treeSortNaive(int* array, long int n);
+void treeSortMultiset(int* array, long int n);
+
 void cubeSort(int* array, long int n);
 
-bool sortCheck(int * array, long int n);
+bool sortCheck(const int* array, long int n);
 
-//timer class
 class Timer
 {
 public:
     void start();
     void stop();
-    double elapsedSeconds();
-    double elapsedMilliseconds();
-    double elapsedNanoseconds();
+
+    double elapsedSeconds() const;
+    double elapsedMilliseconds() const;
+    double elapsedNanoseconds() const;
+
+private:
+    std::chrono::steady_clock::time_point startTime;
+    std::chrono::steady_clock::time_point endTime;
+    bool running = false;
 };
+
+#endif
