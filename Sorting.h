@@ -35,6 +35,9 @@ void quickSort2(int* array, long int n);
 void mergeSort(int* array, long int n);
 void merge(int * array, int left, int middle, int right);
 void mergeSortHelper(int * array, int left, int right);
+void parallelMergeSort(int* array, long int n);
+//cube sort function
+void cubeSort(int* array, long int n);
 
 bool sortCheck(int * array, long int n);
 

@@ -1,13 +1,67 @@
 #include "Sorting.h"
 
+#include <algorithm>
+#include <vector>
+
 using namespace std;
 
 /*
-Counting Sort. A highly time-efficient sorting algorithm discovered outside of CS 350
--Adrian
+    Counting Sort
+
+    Stable integer sorting algorithm with O(n + k) time complexity,
+    where n is the number of elements and k is the range of input values.
+
+    This implementation supports negative integers by offsetting values
+    using the minimum value found in the input array.
 */
+
 //NEW IMPLEMENTATION
 void countingSort(int *array, long int n){
+    //validate first
+    if (array == nullptr || n <= 1)
+    {
+        return;
+    }
+
+    int minValue = array[0];
+    int maxValue = array[0];
+
+    for (long int i = 1; i < n; ++i)
+    {
+        minValue = std::min(minValue, array[i]);
+        maxValue = std::max(maxValue, array[i]);
+    }
+
+    const long int range = static_cast<long int>(maxValue) - minValue + 1;
+
+    std::vector<int> count(static_cast<std::size_t>(range), 0);
+    std::vector<int> output(static_cast<std::size_t>(n));
+
+    for (long int i = 0; i < n; ++i)
+    {
+        ++count[array[i] - minValue];
+    }
+
+    for (std::size_t i = 1; i < count.size(); ++i)
+    {
+        count[i] += count[i - 1];
+    }
+
+    for (long int i = n - 1; i >= 0; --i)
+    {
+        int value = array[i];
+        int countIndex = value - minValue;
+
+        output[count[countIndex] - 1] = value;
+        --count[countIndex];
+    }
+
+    for (long int i = 0; i < n; ++i)
+    {
+        array[i] = output[i];
+    }
+
+    /* old implementation
     //discover the range first
 	int range = 0;
 	for (int x = 0; x < n; x++)
@@ -20,11 +74,7 @@ void countingSort(int *array, long int n){
 	int* count = new int [range];
     int i;
     int* out =  new int [n];
-    /*
-    int count[range]={0};
-    int i;
-    int out[n];
-    */
+
     
     //counting the items
     for(i=0;i<n;i++)
@@ -34,47 +84,12 @@ void countingSort(int *array, long int n){
     for(i=1;i<range;i++)
     count[i]+=count[i-1];
     
-   
-    
     for(i=n-1;i>=0;i--){
         out[count[array[i]]-1]=array[i];
         --count[array[i]];
     }
     
     for(i=0;i<n;i++)
-		array[i]=out[i];    
+		array[i]=out[i]; 
+    */
 }
-
-//OLD IMPLEMENTATION
-//DOESNT WORK
-/*void countSort(int * array, long int size)
-{
-    int maxValue = 0;
-    //find the max value first
-    for (int x = 1; x < size; x++)
-    {
-        if (array[x] > maxValue)
-            maxValue = array[x];
-    }
-// original code commented out to avoid errors
-//  int sorted[size] = {0}; 
-//  int count[maxValue] = {0};
-//
-    //added this modified code to remove errors in compile -zack
-    int * sorted = new int [size]; 
-    int * count = new int [maxValue];
-    for (int j = 0; j < size; j++)
-    {
-        count[array[j]]++;
-    }
-    for (int i = 0; i < size; i++)
-    {
-        count[i] += count[i-1];
-    }
-    for (int z = size; z >= 0; z--)
-    {
-        sorted[count[array[z]]] = array[z];
-	count[array[z]] = count[array[z]]-1;
-    }
-}
-*/

@@ -1,7 +1,88 @@
 #include "Sorting.h"
 
-using namespace std;
+#include <vector>
 
+/*
+	Merge Sort
+
+	Stable comparison sorting algorithm with O(n log n) time complexity.
+	This implementation uses one reusable temporary buffer to reduce
+	repeated allocations during recursive merging.
+*/
+
+namespace
+{ //anonymous namespace to keep these functions private to MergeSort
+	void merge(int* array, std::vector<int>& temp, long int left, long int middle, long int right)
+	{
+		long int leftIndex = left;
+		long int rightIndex = middle + 1;
+		long int tempIndex = left;
+
+		while (leftIndex <= middle && rightIndex <= right)
+		{
+			if (array[leftIndex] <= array[rightIndex])
+			{
+				temp[static_cast<std::size_t>(tempIndex)] = array[leftIndex];
+				++leftIndex;
+			}
+			else
+			{
+				temp[static_cast<std::size_t>(tempIndex)] = array[rightIndex];
+				++rightIndex;
+			}
+
+			++tempIndex;
+		}
+
+		while (leftIndex <= middle)
+		{
+			temp[static_cast<std::size_t>(tempIndex)] = array[leftIndex];
+			++leftIndex;
+			++tempIndex;
+		}
+
+		while (rightIndex <= right)
+		{
+			temp[static_cast<std::size_t>(tempIndex)] = array[rightIndex];
+			++rightIndex;
+			++tempIndex;
+		}
+
+		for (long int i = left; i <= right; ++i)
+		{
+			array[i] = temp[static_cast<std::size_t>(i)];
+		}
+	}
+
+	void mergeSortHelper(int* array, std::vector<int>& temp, long int left, long int right)
+	{
+		if (left >= right)
+		{
+			return;
+		}
+
+		const long int middle = left + (right - left) / 2;
+
+		mergeSortHelper(array, temp, left, middle);
+		mergeSortHelper(array, temp, middle + 1, right);
+
+		merge(array, temp, left, middle, right);
+	}
+}
+
+void mergeSort(int* array, long int n)
+{
+	if (array == nullptr || n <= 1)
+	{
+		return;
+	}
+
+	std::vector<int> temp(static_cast<std::size_t>(n));
+
+	mergeSortHelper(array, temp, 0, n - 1);
+}
+
+/* old code
 void merge(int * array, int left, int middle, int right)
 {
 	int x, y;
@@ -78,3 +159,4 @@ void mergeSort(int* array, long int n)
 {
 	mergeSortHelper(array, 0, n - 1);
 }
+*/

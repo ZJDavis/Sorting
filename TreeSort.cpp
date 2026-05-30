@@ -1,67 +1,100 @@
 #include "Sorting.h"
   
-using namespace std; 
-
 /*
-    This sorting algorithm builds a binary search tree from the randomized 
-    data and once complete, does an in-order traversal of the tree, 
-    overwriting the original data with the sorted order. This is expected 
-    to be pretty bad with the nearly sorted, and terrible with the 
-    reverse-sorted arrays
-    -Zack
+    Tree Sort
+
+    Builds a binary search tree from the input, then writes the sorted
+    values back to the original array using an in-order traversal.
+
+    This version uses a plain unbalanced BST, so sorted and reverse-sorted
+    input can degrade to O(n²).
 */
 
-// main logic of tree sort
-void treeSort(int * array, long int n) 
-{ 
-    //start with an empty tree
-    struct Node *root = NULL; 
-  
-    // Construct the BST 
-    root = insert(root, array[0]); 
-    for (int i = 1; i < n; ++i) 
-        insert(root, array[i]); 
-  
-    // Store inorder traversal of the BST in arrayTS 
-    int i = 0; 
-    rewrite(root, array, i); 
-} 
+namespace
+{
+    struct TreeNode
+    {
+        int value;
+        long int count;
+        TreeNode* left;
+        TreeNode* right;
+    };
 
-// Writes traversal of the BST into arrayTS (overwriting original data)
-void rewrite(Node *root, int * array, int &i) 
-{ 
-    if (root != NULL) 
-    { 
-        rewrite(root->left, array, i); 
-        array[i] = root->num; 
-        ++i;
-        rewrite(root->right, array, i); 
-    } 
-} 
-  
-// A helper function to add a node to the tree
-Node* insert(Node* node, int data) 
-{ 
-    // empty tree: new node free!
-    if (node == NULL) 
-		return newNode(data); 
-  
-    // Otherwise, recurse down the tree
-    if (data < node->num) 
-        node->left  = insert(node->left, data); 
-    else if (data >= node->num) 
-        node->right = insert(node->right, data); 
-  
-    // return Node pointer
-    return node; 
-} 
+    TreeNode* createNode(int value)
+    {
+        return new TreeNode{ value, 1, nullptr, nullptr };
+    }
 
-// A utility function to create a new BST Node 
-struct Node *newNode(int data) 
-{ 
-    struct Node *temp = new Node; 
-    temp->num = data; 
-    temp->left = temp->right = NULL; 
-    return temp; 
-}   
-  
+    TreeNode* insert(TreeNode* node, int value)
+    {
+        if (node == nullptr)
+        {
+            return createNode(value);
+        }
+
+        if (value < node->value)
+        {
+            node->left = insert(node->left, value);
+        }
+        else if (value > node->value)
+        {
+            node->right = insert(node->right, value);
+        }
+        else
+        {
+            ++node->count;
+        }
+
+        return node;
+    }
+
+    void writeInOrder(TreeNode* node, int* array, long int& index)
+    {
+        if (node == nullptr)
+        {
+            return;
+        }
+
+        writeInOrder(node->left, array, index);
+
+        for (long int i = 0; i < node->count; ++i)
+        {
+            array[index] = node->value;
+            ++index;
+        }
+
+        writeInOrder(node->right, array, index);
+    }
+
+    void deleteTree(TreeNode* node)
+    {
+        if (node == nullptr)
+        {
+            return;
+        }
+
+        deleteTree(node->left);
+        deleteTree(node->right);
+        delete node;
+    }
+}
+
+void treeSort(int* array, long int n)
+{
+    if (array == nullptr || n <= 1)
+    {
+        return;
+    }
+
+    TreeNode* root = nullptr;
+
+    for (long int i = 0; i < n; ++i)
+    {
+        root = insert(root, array[i]);
+    }
+
+    long int index = 0;
+    writeInOrder(root, array, index);
+
+    deleteTree(root);
+}
